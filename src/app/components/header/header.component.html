@@ -13,6 +13,7 @@
         </mat-menu>
       <a mat-button [routerLink]="'/pokedex'"> Pokedex </a>
       <a mat-button [routerLink]="'/test'"> Test </a>
+      <a mat-button [routerLink]="'/user'"> User </a>
 
     </div>
   </mat-toolbar-row>
@@ -27,8 +28,9 @@
           <button mat-menu-item>Item 1</button>
           <button mat-menu-item>Item 2</button>
         </mat-menu>
-      <a mat-list-item [routerLink]="'/pokedex'"> Pokedex </a>
+      <a mat-list-item [routerLink]="'/pokedex'" (click)="sidenav.close()"> Pokedex </a>
       <a mat-list-item [routerLink]="'/test'">Test </a>
+      <a mat-list-item [routerLink]="'/user'">User </a>
       <a mat-list-item (click)="sidenav.toggle()" href="" mat-list-item>Close</a>
 
     </mat-nav-list>

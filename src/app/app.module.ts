@@ -12,9 +12,12 @@ import { MatListModule } from '@angular/material/list';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { TestComponent } from './components/test/test.component';
+import { PokedexComponent } from './components/pokedex/pokedex.component';
+import { UserComponent } from './components/user/user.component';
+import { HomeComponent } from './components/home/home.component';
 
 @NgModule({
-  declarations: [AppComponent, HeaderComponent, TestComponent],
+  declarations: [AppComponent, HeaderComponent, TestComponent, PokedexComponent, UserComponent, HomeComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
