@@ -15,9 +15,12 @@ import { TestComponent } from './components/test/test.component';
 import { PokedexComponent } from './components/pokedex/pokedex.component';
 import { UserComponent } from './components/user/user.component';
 import { HomeComponent } from './components/home/home.component';
+import { BarComponent } from './components/test/bar/bar.component';
+import { PieComponent } from './components/test/pie/pie.component';
+import { ScatterComponent } from './components/test/scatter/scatter.component';
 
 @NgModule({
-  declarations: [AppComponent, HeaderComponent, TestComponent, PokedexComponent, UserComponent, HomeComponent],
+  declarations: [AppComponent, HeaderComponent, TestComponent, PokedexComponent, UserComponent, HomeComponent, BarComponent, PieComponent, ScatterComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,

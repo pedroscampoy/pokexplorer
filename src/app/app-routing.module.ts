@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { ChordTypesComponent } from './components/chord-types/chord-types.component';
 import { HomeComponent } from './components/home/home.component';
 import { PokedexComponent } from './components/pokedex/pokedex.component';
 import { TestComponent } from './components/test/test.component';
@@ -13,6 +14,10 @@ const routes: Routes = [
   {
     path: 'pokedex',
     component: PokedexComponent,
+  },
+  {
+    path: 'chord',
+    component: ChordTypesComponent,
   },
   {
     path: 'test',
