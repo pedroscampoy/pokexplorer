@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import * as d3 from 'd3';
 import { Framework } from 'src/app/core/models/framework.model';
+import { createSvg } from 'src/app/core/helpers/createSvg'
 import { SvgInHtml } from 'src/app/core/models/svgInHtml.model';
 
 @Component({
@@ -10,27 +11,27 @@ import { SvgInHtml } from 'src/app/core/models/svgInHtml.model';
 })
 export class BarComponent implements OnInit {
   @Input() data!: Array<Framework>;
+  private  margin = { top: 50, right: 50, bottom: 50, left: 50 };
+  private divideFactor = 3
+  private width =  window.innerWidth / this.divideFactor - this.margin.left - this.margin.right;
+  private height = 400 - this.margin.top * 2;
   private svg: any;
-  private margin = 50;
-  private width = 750 - this.margin * 2;
-  private height = 400 - this.margin * 2;
 
   constructor() {}
-
   ngOnInit(): void {
-    this.createSvg();
+    this.svg = createSvg('figure#bar', this.svg, this.height, this.divideFactor);
     this.drawBars(this.data);
   }
 
-  private createSvg(): void {
-    this.svg = d3
-      .select('figure#bar')
-      .append('svg')
-      .attr('width', this.width + this.margin * 2)
-      .attr('height', this.height + this.margin * 2)
-      .append('g')
-      .attr('transform', 'translate(' + this.margin + ',' + this.margin + ')');
-  }
+  // private createSvg(): void {
+  //   this.svg = d3
+  //     .select('figure#bar')
+  //     .append('svg')
+  //     .attr('width', this.width + this.margin * 2)
+  //     .attr('height', this.height + this.margin * 2)
+  //     .append('g')
+  //     .attr('transform', 'translate(' + this.margin + ',' + this.margin + ')');
+  // }
 
   private drawBars(data: any[]): void {
     // Create the X-axis band scale
