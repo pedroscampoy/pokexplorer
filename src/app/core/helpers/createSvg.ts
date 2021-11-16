@@ -7,7 +7,7 @@ export function createSvg(
   divideFactor: number = 3
 ): any {
   const margin = { top: 50, right: 50, bottom: 50, left: 50 };
-  const width = window.innerWidth / divideFactor - margin.left - margin.right;
+  const width = window.innerWidth / divideFactor - (margin.left + margin.right) ;
   svg = d3
     .select(htmlTag)
     .append('svg')

@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import * as d3 from 'd3';
 import { Framework } from 'src/app/core/models/framework.model';
-import { createSvg } from 'src/app/core/helpers/createSvg'
+import { createSvg } from 'src/app/core/helpers/createSvg';
 import { SvgInHtml } from 'src/app/core/models/svgInHtml.model';
 
 @Component({
@@ -11,15 +11,20 @@ import { SvgInHtml } from 'src/app/core/models/svgInHtml.model';
 })
 export class BarComponent implements OnInit {
   @Input() data!: Array<Framework>;
-  private  margin = { top: 50, right: 50, bottom: 50, left: 50 };
-  private divideFactor = 3
-  private width =  window.innerWidth / this.divideFactor - this.margin.left - this.margin.right;
+  private margin = { top: 50, right: 50, bottom: 50, left: 50 };
+  private divideFactor = 3;
+  private width = (window.innerWidth / this.divideFactor) - (this.margin.left + this.margin.right);
   private height = 400 - this.margin.top * 2;
   private svg: any;
 
   constructor() {}
   ngOnInit(): void {
-    this.svg = createSvg('figure#bar', this.svg, this.height, this.divideFactor);
+    this.svg = createSvg(
+      'figure#bar',
+      this.svg,
+      this.height,
+      this.divideFactor
+    );
     this.drawBars(this.data);
   }
 
