@@ -8,7 +8,8 @@ import { Framework } from 'src/app/core/models/framework.model';
   styleUrls: ['./pie.component.scss'],
 })
 export class PieComponent implements OnInit {
-  @Input() data!: Array<Framework>;
+  @Input() dataValue!: any;
+  data: any;
   private svg: any;
   private margin = 50;
   private width = 750;
@@ -20,6 +21,7 @@ export class PieComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
+    this.data = this.dataValue['data'];
     this.createSvg();
     this.createColors();
     this.drawChart();
@@ -41,7 +43,7 @@ export class PieComponent implements OnInit {
   private createColors(): void {
     this.colors = d3
       .scaleOrdinal()
-      .domain(this.data.map((d) => d.Stars.toString()))
+      .domain(this.data.map((d: Framework) => d.Stars.toString()))
       .range(['#c7d3ec', '#a5b8db', '#879cc4', '#677795', '#5a6782']);
   }
 

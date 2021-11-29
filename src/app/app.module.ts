@@ -18,6 +18,7 @@ import { HomeComponent } from './components/home/home.component';
 import { BarComponent } from './components/test/bar/bar.component';
 import { PieComponent } from './components/test/pie/pie.component';
 import { ScatterComponent } from './components/test/scatter/scatter.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [AppComponent, HeaderComponent, TestComponent, PokedexComponent, UserComponent, HomeComponent, BarComponent, PieComponent, ScatterComponent],
@@ -31,6 +32,7 @@ import { ScatterComponent } from './components/test/scatter/scatter.component';
     MatListModule,
     MatButtonModule,
     MatMenuModule,
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent],

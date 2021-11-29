@@ -1,6 +1,28 @@
 <header>
   <h1>Angular + D3</h1>
 </header>
-<app-bar [data]="data"></app-bar>
-<app-pie [data]="data"></app-pie>
-<app-scatter [data]="data"></app-scatter>
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <label for="title">Title</label>
+  <input id="title" type="text" formControlName="title" />
+  <label for="subTitle">Subtitle</label>
+  <input id="subTitle" type="text" formControlName="subTitle" />
+  <button type="submit" [disabled]="!form.valid">Submit</button>
+  <h2>Data</h2>
+  <div formArrayName="data">
+    <div *ngFor="let datum of data.controls; let i = index" [formGroupName]="i">
+      <!-- The repeated alias template -->
+      <label for="Framework-{{ i }}">Framework:</label>
+      <input id="Framework-{{ i }}" type="text" formControlName="Framework" />
+      <label for="Stars-{{ i }}">Stars:</label>
+      <input id="Stars-{{ i }}" type="number" formControlName="Stars" />
+      <label for="Released-{{ i }}">Released:</label>
+      <input id="Released-{{ i }}" type="text" formControlName="Released" />
+      <button>X</button>
+    </div>
+  </div>
+  <button (click)="onAddData()" type="button">+ Add</button>
+</form>
+
+<app-bar [dataValue]="dataValue"></app-bar>
+<app-pie [dataValue]="dataValue"></app-pie>
+<app-scatter [dataValue]="dataValue"></app-scatter>

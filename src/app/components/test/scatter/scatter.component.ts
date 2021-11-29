@@ -8,7 +8,8 @@ import { Framework } from 'src/app/core/models/framework.model';
   styleUrls: ['./scatter.component.scss'],
 })
 export class ScatterComponent implements OnInit {
-  @Input() data!: Array<Framework>;
+  @Input() dataValue!: any;
+  data: any;
   private svg: any;
   private margin = 50;
   private width = 750 - this.margin * 2;
@@ -17,6 +18,7 @@ export class ScatterComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
+    this.data = this.dataValue['data'];
     this.createSvg();
     this.drawPlot();
   }
