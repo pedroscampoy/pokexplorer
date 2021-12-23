@@ -20,16 +20,31 @@ export class BarComponent implements OnInit, OnChanges {
   private height = 400 - this.margin.top * 2;
   private svg: any;
   private initialized = false;
+  private x: any;
+  private xAxisGroup: any;
+  private yAxisGroup: any;
 
-  constructor() {}
+  constructor() {
+    this.x = d3.scaleBand().range([0, this.width]);
+  }
   ngOnInit(): void {
-    this.data = this.dataValue['data'];
     this.svg = createSvg(
       'figure#bar',
       this.svg,
       this.height,
       this.divideFactor
     );
+
+    this.xAxisGroup = this.svg
+      .attr('class', 'y axis')
+      .append('g')
+      .attr('transform', 'translate(0,' + this.height + ')');
+
+    this.yAxisGroup = this.svg
+      .attr('class', 'y axis')
+      .append('g');
+
+    this.data = this.dataValue['data'];
     console.log('init SVG', this.svg);
     this.drawBars(this.data);
     this.initialized = true;
@@ -42,80 +57,78 @@ export class BarComponent implements OnInit, OnChanges {
     }
   }
 
-  // private createSvg(): void {
-  //   this.svg = d3
-  //     .select('figure#bar')
-  //     .append('svg')
-  //     .attr('width', this.width + this.margin * 2)
-  //     .attr('height', this.height + this.margin * 2)
-  //     .append('g')
-  //     .attr('transform', 'translate(' + this.margin + ',' + this.margin + ')');
-  // }
-
   private drawBars(data: any[]): void {
     // Create the X-axis band scale
-    const x = d3
-      .scaleBand()
-      .range([0, this.width])
-      .domain(data.map((d) => d.Framework))
-      .padding(0.2);
+    this.x.domain(data.map((d) => d.Framework)).padding(0.2);
 
     // Draw the X-axis on the DOM
-    this.svg
-      .append('g')
-      .attr('transform', 'translate(0,' + this.height + ')')
-      .call(d3.axisBottom(x))
+    this.xAxisGroup
+      .call(d3.axisBottom(this.x))
       .selectAll('text')
       .attr('transform', 'translate(-10,0)rotate(-45)')
       .style('text-anchor', 'end');
 
     // Create the Y-axis band scale
-    const y = d3.scaleLinear().domain([0, 200000]).range([this.height, 0]);
+    const y = d3
+      .scaleLinear()
+      .domain([0, d3.max(data, (d) => d.Stars)])
+      .range([this.height, 0]);
 
     // Draw the Y-axis on the DOM
-    this.svg.append('g').call(d3.axisLeft(y));
+    this.yAxisGroup.call(d3.axisLeft(y));
 
     // Create and fill the bars
     let bars = this.svg.selectAll('.bar').remove().exit().data(data);
+
+    bars.exit().transition().duration(1000).attr('height', 0).remove();
+
     bars
       .enter()
       .append('rect')
       .attr('class', 'bar')
-      .attr('x', (d: Framework) => x(d.Framework))
+      .attr('x', (d: Framework) => this.x(d.Framework))
       .attr('y', (d: Framework) => y(d.Stars))
-      .attr('width', x.bandwidth())
-      .attr('height', (d: Framework) => this.height - y(d.Stars))
-      .attr('fill', '#d04a35');
-    bars.exit().remove();
-  }
-
-  private updateBars(data: any[]): void {
-    console.log('ipdate');
-    console.log(this.svg);
-    const x = d3
-      .scaleBand()
-      .range([0, this.width])
-      .domain(data.map((d) => d.Framework))
-      .padding(0.2);
-
-    const y = d3.scaleLinear().domain([0, 200000]).range([this.height, 0]);
-
-    console.log('update after', this.svg);
-
-    let bars = this.svg.select('g').selectAll('bars').data(data);
-    console.log('bars', bars);
-
-    bars.exit().remove(); //remove unneeded bars
-    bars.enter().append('rect'); //create any new bars needed
-
-    //update all bars to new positions
-    bars
+      .attr('width', this.x.bandwidth())
       .transition()
-      .duration(500)
-      .attr('x', (d: Framework) => x(d.Framework))
-      .attr('y', (d: Framework) => y(d.Stars))
-      .attr('width', x.bandwidth())
+      .duration(1000)
       .attr('height', (d: Framework) => this.height - y(d.Stars))
       .attr('fill', '#d04a35');
+    // bars.exit().remove();
   }
 }
+
+// private createSvg(): void {
+//   this.svg = d3
+//     .select('figure#bar')
+//     .append('svg')
+//     .attr('width', this.width + this.margin * 2)
+//     .attr('height', this.height + this.margin * 2)
+//     .append('g')
+//     .attr('transform', 'translate(' + this.margin + ',' + this.margin + ')');
+// }
+
+// const y = d3.scaleLinear().domain([0, d3.max(data, d => d.Stars)]).range([this.height, 0]);
+
+//     // Draw the Y-axis on the DOM
+//     this.svg.append('g').call(d3.axisLeft(y));
+
+//     // Create and fill the bars
+//     let bars = this.svg.selectAll('.bar').data(data);
+
+//     bars.exit().transition().duration(1000).attr('height', 0).remove();
+
+//     bars
+//       .enter()
+//       .append('rect')
+//       .attr('class', 'bar')
+//       .attr('x', (d: Framework) => x(d.Framework))
+//       .attr('y', (d: Framework) => y(d.Stars))
+//       .attr('height', 0)
+//       .attr('width', x.bandwidth())
+//       .attr('fill', '#d04a35')
+//       .merge(bars)
+//       .transition()
+//       .duration(1000)
+//       .delay(1000)
+//       .attr('x', (d: Framework) => x(d.Framework))
+//       .attr('height', (d: Framework) => this.height - y(d.Stars))
