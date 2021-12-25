@@ -17,12 +17,14 @@
       <input id="Stars-{{ i }}" type="number" formControlName="Stars" />
       <label for="Released-{{ i }}">Released:</label>
       <input id="Released-{{ i }}" type="text" formControlName="Released" />
-      <button>X</button>
+      <button (click)="onDeleteData(i)">X</button>
     </div>
   </div>
   <button (click)="onAddData()" type="button">+ Add</button>
 </form>
 
-<app-bar [dataValue]="dataValue"></app-bar>
-<app-pie [dataValue]="dataValue"></app-pie>
-<app-scatter [dataValue]="dataValue"></app-scatter>
+<div class="chart-wrapper">
+  <app-bar [dataValue]="dataValue"></app-bar>
+  <!-- <app-pie [dataValue]="dataValue"></app-pie> -->
+  <app-scatter [dataValue]="dataValue"></app-scatter>
+</div>

@@ -12,40 +12,67 @@ import { SvgInHtml } from 'src/app/core/models/svgInHtml.model';
 export class BarComponent implements OnInit, OnChanges {
   @Input() dataValue!: any;
   data: any;
-  private margin = { top: 50, right: 50, bottom: 50, left: 50 };
+  private margin = { top: 50, right: 50, bottom: 100, left: 100 };
   private divideFactor = 3;
   private width =
     window.innerWidth / this.divideFactor -
     (this.margin.left + this.margin.right);
-  private height = 400 - this.margin.top * 2;
+  private height = 400 - (this.margin.top + this.margin.bottom);
   private svg: any;
   private initialized = false;
   private x: any;
+  private y: any;
   private xAxisGroup: any;
   private yAxisGroup: any;
 
   constructor() {
-    this.x = d3.scaleBand().range([0, this.width]);
+    this.x = d3.scaleBand()
+      .range([0, this.width])
+      .padding(0.2);;
+
+    this.y = d3.scaleLinear()
+      .range([this.height, 0]);
   }
   ngOnInit(): void {
     this.svg = createSvg(
+      this.margin,
       'figure#bar',
       this.svg,
       this.height,
       this.divideFactor
     );
 
+    // X label
+    this.svg
+      .append('text')
+      .attr('class', 'x axis-label')
+      .attr('x', this.width / 2)
+      .attr('y', this.height + 60)
+      .attr('font-size', '15px')
+      .attr('text-anchor', 'middle')
+      .text('Framework');
+
+    // Y label
+    this.svg
+      .append('text')
+      .attr('class', 'y axis-label')
+      .attr('x', -(this.height / 2))
+      .attr('y', -60)
+      .attr('font-size', '15px')
+      .attr('text-anchor', 'middle')
+      .attr('transform', 'rotate(-90)')
+      .text('Stars');
+
     this.xAxisGroup = this.svg
-      .attr('class', 'y axis')
       .append('g')
+      .attr('class', 'y axis')
       .attr('transform', 'translate(0,' + this.height + ')');
 
     this.yAxisGroup = this.svg
-      .attr('class', 'y axis')
-      .append('g');
+      .append('g')
+      .attr('class', 'y axis');
 
     this.data = this.dataValue['data'];
-    console.log('init SVG', this.svg);
     this.drawBars(this.data);
     this.initialized = true;
   }
@@ -58,42 +85,50 @@ export class BarComponent implements OnInit, OnChanges {
   }
 
   private drawBars(data: any[]): void {
+    const t = d3.transition().duration(750)
     // Create the X-axis band scale
-    this.x.domain(data.map((d) => d.Framework)).padding(0.2);
-
+    this.x.domain(data.map((d: Framework) => d.Framework))
     // Draw the X-axis on the DOM
     this.xAxisGroup
+      .transition(t)
       .call(d3.axisBottom(this.x))
       .selectAll('text')
-      .attr('transform', 'translate(-10,0)rotate(-45)')
-      .style('text-anchor', 'end');
+      .style('text-anchor', 'end')
+      .attr('transform', 'translate(-10,0)rotate(-45)');
 
     // Create the Y-axis band scale
-    const y = d3
-      .scaleLinear()
-      .domain([0, d3.max(data, (d) => d.Stars)])
-      .range([this.height, 0]);
-
+    this.y.domain([0, d3.max(data, (d) => d.Stars)]);
     // Draw the Y-axis on the DOM
-    this.yAxisGroup.call(d3.axisLeft(y));
+    this.yAxisGroup.transition(t).call(d3.axisLeft(this.y).ticks(10));
 
-    // Create and fill the bars
-    let bars = this.svg.selectAll('.bar').remove().exit().data(data);
+    // JOIN new data with old elements.
+    let rects = this.svg
+      .selectAll('rect')
+      .data(data,  (d: Framework) => d.Framework);
 
-    bars.exit().transition().duration(1000).attr('height', 0).remove();
+    // EXIT old elements not present in new data.
+    rects
+    .exit()
+    .attr("fill", "red")
+    .transition(t)
+      .attr("height", 0)
+      .attr("y", this.y(0))
+      .remove()
 
-    bars
+    // ENTER new elements present in new data...
+    rects
       .enter()
       .append('rect')
-      .attr('class', 'bar')
-      .attr('x', (d: Framework) => this.x(d.Framework))
-      .attr('y', (d: Framework) => y(d.Stars))
-      .attr('width', this.x.bandwidth())
-      .transition()
-      .duration(1000)
-      .attr('height', (d: Framework) => this.height - y(d.Stars))
-      .attr('fill', '#d04a35');
-    // bars.exit().remove();
+      .attr("fill", '#d04a35')
+      .attr("y", this.y(0))
+      .attr("height", 0)
+      // AND UPDATE old elements present in new data.
+      .merge(rects)
+      .transition(t)
+        .attr("x",  (d: Framework)  => this.x(d.Framework))
+        .attr("width", this.x.bandwidth)
+        .attr("y",  (d: Framework)  => this.y(d.Stars))
+        .attr("height",  (d: Framework) => this.height - this.y(d.Stars))
   }
 }
 

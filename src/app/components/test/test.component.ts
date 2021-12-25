@@ -60,7 +60,7 @@ export class TestComponent implements OnInit {
     this.data.push(dataForm);
   }
 
-  deleteData(dataIndex: number) {
+  onDeleteData(dataIndex: number) {
     this.data.removeAt(dataIndex)
   }
 }
