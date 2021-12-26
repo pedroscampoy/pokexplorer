@@ -24,14 +24,13 @@ export class BarComponent implements OnInit, OnChanges {
   private y: any;
   private xAxisGroup: any;
   private yAxisGroup: any;
+  private color: any;
 
   constructor() {
-    this.x = d3.scaleBand()
-      .range([0, this.width])
-      .padding(0.2);;
+    this.x = d3.scaleBand().range([0, this.width]).padding(0.2);
 
-    this.y = d3.scaleLinear()
-      .range([this.height, 0]);
+    this.y = d3.scaleLinear().range([this.height, 0]);
+
   }
   ngOnInit(): void {
     this.svg = createSvg(
@@ -68,9 +67,7 @@ export class BarComponent implements OnInit, OnChanges {
       .attr('class', 'y axis')
       .attr('transform', 'translate(0,' + this.height + ')');
 
-    this.yAxisGroup = this.svg
-      .append('g')
-      .attr('class', 'y axis');
+    this.yAxisGroup = this.svg.append('g').attr('class', 'y axis');
 
     this.data = this.dataValue['data'];
     this.drawBars(this.data);
@@ -85,9 +82,19 @@ export class BarComponent implements OnInit, OnChanges {
   }
 
   private drawBars(data: any[]): void {
-    const t = d3.transition().duration(750)
+    //Set dynamic colors
+    this.color = d3
+      .scaleOrdinal()
+      .domain(data.map((d: Framework) => d.Framework))
+      .range(
+        data.map((group, i) => {
+          const t = i / data.length;
+          return d3.hcl(t * 360, 50, 80);
+        })
+      );
+    const t = d3.transition().duration(750);
     // Create the X-axis band scale
-    this.x.domain(data.map((d: Framework) => d.Framework))
+    this.x.domain(data.map((d: Framework) => d.Framework));
     // Draw the X-axis on the DOM
     this.xAxisGroup
       .transition(t)
@@ -104,31 +111,31 @@ export class BarComponent implements OnInit, OnChanges {
     // JOIN new data with old elements.
     let rects = this.svg
       .selectAll('rect')
-      .data(data,  (d: Framework) => d.Framework);
+      .data(data, (d: Framework) => d.Framework);
 
     // EXIT old elements not present in new data.
     rects
-    .exit()
-    .attr("fill", "red")
-    .transition(t)
-      .attr("height", 0)
-      .attr("y", this.y(0))
-      .remove()
+      .exit()
+      .attr('fill', 'red')
+      .transition(t)
+      .attr('height', 0)
+      .attr('y', this.y(0))
+      .remove();
 
     // ENTER new elements present in new data...
     rects
       .enter()
       .append('rect')
-      .attr("fill", '#d04a35')
-      .attr("y", this.y(0))
-      .attr("height", 0)
+      .attr('fill', (d: Framework) => this.color(d.Framework))
+      .attr('y', this.y(0))
+      .attr('height', 0)
       // AND UPDATE old elements present in new data.
       .merge(rects)
       .transition(t)
-        .attr("x",  (d: Framework)  => this.x(d.Framework))
-        .attr("width", this.x.bandwidth)
-        .attr("y",  (d: Framework)  => this.y(d.Stars))
-        .attr("height",  (d: Framework) => this.height - this.y(d.Stars))
+      .attr('x', (d: Framework) => this.x(d.Framework))
+      .attr('width', this.x.bandwidth)
+      .attr('y', (d: Framework) => this.y(d.Stars))
+      .attr('height', (d: Framework) => this.height - this.y(d.Stars));
   }
 }
 

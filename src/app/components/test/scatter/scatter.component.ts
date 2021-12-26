@@ -23,13 +23,16 @@ export class ScatterComponent implements OnInit, OnChanges {
   private y: any;
   private xAxisGroup: any;
   private yAxisGroup: any;
+  private color: any;
 
   constructor() {
     this.x = d3.scaleLinear()
       .range([0, this.width])
+      .nice();
 
     this.y = d3.scaleLinear()
-      .range([this.height, 0]);
+      .range([this.height, 0])
+      .nice();
   }
   ngOnInit(): void {
     this.svg = createSvg(
@@ -83,9 +86,19 @@ export class ScatterComponent implements OnInit, OnChanges {
   }
 
   private drawPlot(data: any[]): void {
+    //Set dynamic colors
+    this.color = d3
+      .scaleOrdinal()
+      .domain(data.map((d: Framework) => d.Framework))
+      .range(
+        data.map((group, i) => {
+          const t = i / data.length;
+          return d3.hcl(t * 360, 50, 80);
+        })
+      );
     const t = d3.transition().duration(750)
     // Create the X-axis band scale
-    this.x.domain(d3.extent(data, (d) => d.Released))
+    this.x.domain([d3.min(data, (d) => d.Released) - 2, d3.max(data, (d) => d.Released)])
     // Draw the X-axis on the DOM
     this.xAxisGroup.transition(t).call(d3.axisBottom(this.x).ticks(this.data.length));
 
@@ -111,7 +124,7 @@ export class ScatterComponent implements OnInit, OnChanges {
     circles
       .enter()
       .append('circle')
-      .attr("fill", '#d04a35')
+      .attr("fill", (d: Framework)  => this.color(d.Framework))
       .attr("cy", this.y(0))
       .attr('r', 7)
       // AND UPDATE old elements present in new data.

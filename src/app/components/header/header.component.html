@@ -12,7 +12,11 @@
           <button mat-menu-item>Item 2</button>
         </mat-menu>
       <a mat-button [routerLink]="'/pokedex'"> Pokedex </a>
-      <a mat-button [routerLink]="'/test'"> Test </a>
+      <button mat-button [matMenuTriggerFor]="d3Examples">D3 Examples</button>
+        <mat-menu #d3Examples="matMenu" xPosition="after" [hasBackdrop]="false">
+          <button [routerLink]="'/test'" mat-menu-item>Test</button>
+          <button [routerLink]="'/test'" mat-menu-item>Test</button>
+        </mat-menu>
       <a mat-button [routerLink]="'/user'"> User </a>
 
     </div>
@@ -29,7 +33,11 @@
           <button mat-menu-item>Item 2</button>
         </mat-menu>
       <a mat-list-item [routerLink]="'/pokedex'" (click)="sidenav.close()"> Pokedex </a>
-      <a mat-list-item [routerLink]="'/test'" (click)="sidenav.close()">Test </a>
+      <button mat-button [matMenuTriggerFor]="d3Examples">D3 Examples</button>
+        <mat-menu #d3Examples="matMenu" xPosition="after" [hasBackdrop]="false">
+          <button [routerLink]="'/test'" mat-menu-item>Test</button>
+          <button [routerLink]="'/test'" mat-menu-item>Test</button>
+        </mat-menu>
       <a mat-list-item [routerLink]="'/user'" (click)="sidenav.close()">User </a>
       <a mat-list-item (click)="sidenav.toggle()" href="" mat-list-item>Close</a>
 
