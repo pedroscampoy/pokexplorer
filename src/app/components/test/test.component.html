@@ -7,9 +7,9 @@
     <input id="title" type="text" formControlName="title" />
     <label for="subTitle">Subtitle</label>
     <input id="subTitle" type="text" formControlName="subTitle" />
-    <button type="submit" [disabled]="!form.valid">Submit</button>
   </div>
   <h2>Data</h2>
+  <div>{{dataStore$ | async}}</div>
   <div formArrayName="data">
     <div *ngFor="let datum of data.controls; let i = index" [formGroupName]="i">
       <!-- The repeated alias template -->
@@ -23,6 +23,7 @@
     </div>
   </div>
   <button (click)="onAddData()" type="button">+ Add</button>
+  <button type="submit" [disabled]="!form.valid">Submit</button>
 </form>
 
 <div class="chart-wrapper">

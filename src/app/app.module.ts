@@ -19,9 +19,11 @@ import { BarComponent } from './components/test/bar/bar.component';
 import { PieComponent } from './components/test/pie/pie.component';
 import { ScatterComponent } from './components/test/scatter/scatter.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { Project2Component } from './components/project2/project2.component';
+import { AppStoreModule } from './core/store/app-store.module';
 
 @NgModule({
-  declarations: [AppComponent, HeaderComponent, TestComponent, PokedexComponent, UserComponent, HomeComponent, BarComponent, PieComponent, ScatterComponent],
+  declarations: [AppComponent, HeaderComponent, TestComponent, PokedexComponent, UserComponent, HomeComponent, BarComponent, PieComponent, ScatterComponent, Project2Component],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -32,7 +34,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     MatListModule,
     MatButtonModule,
     MatMenuModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    AppStoreModule
   ],
   providers: [],
   bootstrap: [AppComponent],

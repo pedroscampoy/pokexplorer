@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { ChordTypesComponent } from './components/chord-types/chord-types.component';
 import { HomeComponent } from './components/home/home.component';
 import { PokedexComponent } from './components/pokedex/pokedex.component';
+import { Project2Component } from './components/project2/project2.component';
 import { TestComponent } from './components/test/test.component';
 import { UserComponent } from './components/user/user.component';
 
@@ -22,6 +23,10 @@ const routes: Routes = [
   {
     path: 'test',
     component: TestComponent,
+  },
+  {
+    path: 'project2',
+    component: Project2Component,
   },
   { path: 'user', component: UserComponent },
   {

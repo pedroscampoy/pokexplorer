@@ -107,5 +107,8 @@
       }
     }
   },
-  "defaultProject": "pokexplorer"
+  "defaultProject": "pokexplorer",
+  "cli": {
+    "defaultCollection": "@ngrx/schematics"
+  }
 }

@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Framework } from 'src/app/core/models/framework.model';
+import { Store } from '@ngrx/store';
+import { dataSelector } from 'src/app/core/store/selectors';
 
 @Component({
   selector: 'app-test',
@@ -8,6 +10,8 @@ import { Framework } from 'src/app/core/models/framework.model';
   styleUrls: ['./test.component.scss'],
 })
 export class TestComponent implements OnInit {
+  dataStore$ = this.store.select(dataSelector);
+
   public dataSource: Array<Framework> = [
     { Framework: 'Vue', Stars: 166443, Released: '2014' },
     { Framework: 'React', Stars: 150793, Released: '2013' },
@@ -24,7 +28,7 @@ export class TestComponent implements OnInit {
     data: this.fb.array([]),
   });
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder, public store: Store) {}
 
   ngOnInit(): void {
     this.form = this.fb.group({
