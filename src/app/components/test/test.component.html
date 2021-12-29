@@ -2,12 +2,12 @@
   <h1>Angular + D3</h1>
 </header>
 <form [formGroup]="form" (ngSubmit)="onSubmit()">
-  <div class="title">
+  <!-- <div class="title">
     <label for="title">Title</label>
     <input id="title" type="text" formControlName="title" />
     <label for="subTitle">Subtitle</label>
     <input id="subTitle" type="text" formControlName="subTitle" />
-  </div>
+  </div> -->
   <h2>Data</h2>
   <div>{{dataStore$ | async}}</div>
   <div formArrayName="data">
