@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import * as d3 from 'd3';
+
 
 @Component({
   selector: 'app-chord-types',
@@ -10,6 +12,9 @@ export class ChordTypesComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+    d3.json("").then(function(data: any): void{
+      console.log(data)
+    })
   }
 
 }

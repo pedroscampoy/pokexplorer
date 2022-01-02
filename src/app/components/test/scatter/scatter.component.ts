@@ -12,7 +12,7 @@ export class ScatterComponent implements OnInit, OnChanges {
   @Input() dataValue!: any;
   data: any;
   private margin = { top: 50, right: 50, bottom: 100, left: 100 };
-  private divideFactor = 3;
+  private divideFactor = 2;
   private width =
     window.innerWidth / this.divideFactor -
     (this.margin.left + this.margin.right);
