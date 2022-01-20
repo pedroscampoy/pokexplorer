@@ -1,16 +1,19 @@
-import { Component, Input, OnChanges, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import * as d3 from 'd3';
 import { Framework } from 'src/app/core/models/framework.model';
 import { createSvg } from 'src/app/core/helpers/createSvg';
 import { SvgInHtml } from 'src/app/core/models/svgInHtml.model';
+import { Store } from '@ngrx/store';
+import { dataSelector } from 'src/app/core/store/selectors';
 
 @Component({
   selector: 'app-bar',
   templateUrl: './bar.component.html',
   styleUrls: ['./bar.component.scss'],
 })
-export class BarComponent implements OnInit, OnChanges {
-  @Input() dataValue!: any;
+export class BarComponent implements OnInit {
+  //dataValue!: any;
+  dataStore$ = this.store.select(dataSelector);
   data: any;
   private margin = { top: 50, right: 50, bottom: 100, left: 100 };
   private divideFactor = 3;
@@ -19,19 +22,14 @@ export class BarComponent implements OnInit, OnChanges {
     (this.margin.left + this.margin.right);
   private height = 400 - (this.margin.top + this.margin.bottom);
   private svg: any;
-  private initialized = false;
   private x: any;
   private y: any;
   private xAxisGroup: any;
   private yAxisGroup: any;
   private color: any;
 
-  constructor() {
-    this.x = d3.scaleBand().range([0, this.width]).padding(0.2);
+  constructor(private store: Store) {}
 
-    this.y = d3.scaleLinear().range([this.height, 0]);
-
-  }
   ngOnInit(): void {
     this.svg = createSvg(
       this.margin,
@@ -41,6 +39,24 @@ export class BarComponent implements OnInit, OnChanges {
       this.divideFactor
     );
 
+    this.createAxis();
+    this.createLabel();
+    this.dataStore$.subscribe((data: any) => {
+      this.drawBars(data);
+    });
+  }
+
+  createAxis(): void {
+    this.x = d3.scaleBand().range([0, this.width]).padding(0.2);
+    this.y = d3.scaleLinear().range([this.height, 0]);
+    this.yAxisGroup = this.svg.append('g').attr('class', 'y axis');
+    this.xAxisGroup = this.svg
+      .append('g')
+      .attr('class', 'y axis')
+      .attr('transform', 'translate(0,' + this.height + ')');
+  }
+
+  createLabel(): void {
     // X label
     this.svg
       .append('text')
@@ -61,25 +77,14 @@ export class BarComponent implements OnInit, OnChanges {
       .attr('text-anchor', 'middle')
       .attr('transform', 'rotate(-90)')
       .text('Stars');
-
-    this.xAxisGroup = this.svg
-      .append('g')
-      .attr('class', 'y axis')
-      .attr('transform', 'translate(0,' + this.height + ')');
-
-    this.yAxisGroup = this.svg.append('g').attr('class', 'y axis');
-
-    this.data = this.dataValue['data'];
-    this.drawBars(this.data);
-    this.initialized = true;
   }
 
-  ngOnChanges() {
-    if (this.initialized) {
-      this.data = this.dataValue['data'];
-      this.drawBars(this.data);
-    }
-  }
+  // ngOnChanges() {
+  //   if (this.initialized) {
+  //     this.data = this.dataValue['data'];
+  //     this.drawBars(this.data);
+  //   }
+  // }
 
   private drawBars(data: any[]): void {
     //Set dynamic colors

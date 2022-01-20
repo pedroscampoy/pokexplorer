@@ -21,11 +21,27 @@ import { ScatterComponent } from './components/test/scatter/scatter.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Project2Component } from './components/project2/project2.component';
 import { AppStoreModule } from './core/store/app-store.module';
+import { CommonModule } from '@angular/common';
+import { ChordTypesComponent } from './components/chord-types/chord-types.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
-  declarations: [AppComponent, HeaderComponent, TestComponent, PokedexComponent, UserComponent, HomeComponent, BarComponent, PieComponent, ScatterComponent, Project2Component],
+  declarations: [
+    AppComponent,
+    HeaderComponent,
+    TestComponent,
+    PokedexComponent,
+    UserComponent,
+    HomeComponent,
+    BarComponent,
+    PieComponent,
+    ScatterComponent,
+    Project2Component,
+    ChordTypesComponent,
+  ],
   imports: [
     BrowserModule,
+    CommonModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     MatToolbarModule,
@@ -35,7 +51,8 @@ import { AppStoreModule } from './core/store/app-store.module';
     MatButtonModule,
     MatMenuModule,
     ReactiveFormsModule,
-    AppStoreModule
+    AppStoreModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent],

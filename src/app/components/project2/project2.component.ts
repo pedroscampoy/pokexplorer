@@ -1,7 +1,9 @@
+import { HttpClient } from '@angular/common/http';
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import * as d3 from 'd3';
+// import * as d3tip from 'd3-tip';
+import { Observable } from 'rxjs';
 import { createSvg } from 'src/app/core/helpers/createSvg';
-// import { data } from './data/data';
 
 @Component({
   selector: 'app-project2',
@@ -17,25 +19,75 @@ export class Project2Component implements OnInit, AfterViewInit {
     (this.margin.left + this.margin.right);
   private height = 500 - (this.margin.top + this.margin.bottom);
   private svg: any;
-  private initialized = false;
   private x: any;
   private y: any;
   private area: any;
   private xAxisGroup: any;
   private yAxisGroup: any;
   private color: any;
-  // private time = 0;
+  private time = 0;
   private formatCharacter = '$';
+  private format: any;
   private formattedData: any;
+  private timeLabel: any;
+  private _jsonURL = 'assets/countries.json';
+  private continents: Array<string> = [];
+  private legend: any;
+  // private tip: any;
 
-  constructor() {
+  constructor(private http: HttpClient) {}
+
+  ngOnInit(): void {
+    this.getJSON().subscribe((data) => {
+      this.formattedData = data.map((year: any) => {
+        return year['countries']
+          .filter((country: any) => {
+            const dataExists = country.income && country.life_exp;
+            return dataExists;
+          })
+          .map((country: any) => {
+            if (!this.continents.includes(country.continent)) {
+              this.continents.push(country.continent);
+            }
+            country.income = Number(country.income);
+            country.life_exp = Number(country.life_exp);
+            return country;
+          });
+      });
+      this.update(this.formattedData[this.time]);
+      this.drawLegend();
+    });
+  }
+
+  ngAfterViewInit(): void {
+    d3.interval(() => {
+      // at the end of our data, loop back
+      this.time = this.time < 214 ? this.time + 1 : 0;
+      this.update(this.formattedData[this.time]);
+    }, 100);
+
+    // Tooltip
+    // this.tip = d3.tip()
+    //   .attr('class', 'd3-tip')
+    //   .html((d: any): string => {
+    //     let text = `<strong>Country:</strong> <span style='color:red;text-transform:capitalize'>${d.country}</span><br>`
+    //     text += `<strong>Continent:</strong> <span style='color:red;text-transform:capitalize'>${d.continent}</span><br>`
+    //     text += `<strong>Life Expectancy:</strong> <span style='color:red'>${d3.format(".2f")(d.life_exp)}</span><br>`
+    //     text += `<strong>GDP Per Capita:</strong> <span style='color:red'>${d3.format("$,.0f")(d.income)}</span><br>`
+    //     text += `<strong>Population:</strong> <span style='color:red'>${d3.format(",.0f")(d.population)}</span><br>`
+    //     return text
+    //   })
+
+    // this.svg.call(this.tip)
+
+
     // Scales
     this.x = d3
       .scaleLog()
       .base(10)
       .range([0, this.width])
-      .domain([142, 150000]);
-    //.nice();
+      .domain([142, 150000])
+      .nice();
 
     this.y = d3.scaleLinear().range([this.height, 0]).domain([0, 90]).nice();
 
@@ -46,28 +98,6 @@ export class Project2Component implements OnInit, AfterViewInit {
       .nice();
 
     this.color = d3.scaleOrdinal(d3.schemePastel1);
-  }
-
-  ngOnInit(): void {
-    // this.formattedData = data.map((year: any) => {
-    //   return year['countries']
-    //     .filter((country: any) => {
-    //       const dataExists = country.income && country.life_exp;
-    //       return dataExists;
-    //     })
-    //     .map((country: any) => {
-    //       country.income = Number(country.income);
-    //       country.life_exp = Number(country.life_exp);
-    //       return country;
-    //     });
-    // });
-
-    // console.log(this.formattedData)
-
-  }
-
-  ngAfterViewInit(): void {
-    // let time = 0;
 
     this.svg = createSvg(
       this.margin,
@@ -93,7 +123,7 @@ export class Project2Component implements OnInit, AfterViewInit {
       .attr('font-size', '20px')
       .attr('text-anchor', 'middle')
       .text('Life Expectancy (Years)');
-    const timeLabel = this.svg
+    this.timeLabel = this.svg
       .append('text')
       .attr('y', this.height - 10)
       .attr('x', this.width - 40)
@@ -103,8 +133,11 @@ export class Project2Component implements OnInit, AfterViewInit {
       .text('1800');
 
     // X Axis
-    const xAxisCall = d3.axisBottom(this.x).tickValues([400, 4000, 40000]);
-    //.tickFormat(d3.format(this.formatCharacter));
+    this.format = d3.format(this.formatCharacter);
+    const xAxisCall = d3
+      .axisBottom(this.x)
+      .tickValues([400, 4000, 40000])
+      .tickFormat(this.format);
 
     this.svg
       .append('g')
@@ -115,18 +148,68 @@ export class Project2Component implements OnInit, AfterViewInit {
     // Y Axis
     const yAxisCall = d3.axisLeft(this.y);
     this.svg.append('g').attr('class', 'y axis').call(yAxisCall);
+  }
 
+  update(data: any) {
+    // standard transition time for the visualization
+    const t = d3.transition().duration(100);
 
+    // JOIN new data with old elements.
+    const circles = this.svg
+      .selectAll('circle')
+      .data(data, (d: any) => d.country);
 
-      // run the code every 0.1 second
-      // d3.interval(() => {
-      //   // at the end of our data, loop back
-      //   time = time < 214 ? time + 1 : 0;
-      //   console.log(time);
-      //   // update(formattedData[time])
-      // }, 100);
+    // EXIT old elements not present in new data.
+    circles.exit().remove();
 
-      // first run of the visualization
-      // update(formattedData[0])
+    // ENTER new elements present in new data.
+    circles
+      .enter()
+      .append('circle')
+      .attr('fill', (d: any) => this.color(d.continent))
+      .merge(circles)
+      .transition(t)
+      .attr('cy', (d: any) => this.y(d.life_exp))
+      .attr('cx', (d: any) => this.x(d.income))
+      .attr('r', (d: any) => Math.sqrt(this.area(d.population) / Math.PI));
+
+    // update the time label
+    this.timeLabel.text(String(this.time + 1800));
+  }
+
+  //Legend
+  drawLegend(): void {
+    this.legend = this.svg
+      .append('g')
+      .attr('class', 'legend')
+      .attr(
+        'transform',
+        `translate( ${this.width - 10},  ${this.height - 125})`
+      );
+
+    this.continents.forEach((continent, i) => {
+      const legendRow = this.legend
+        .append('g')
+        .attr('class', 'legend-sub')
+        .attr('transform', `translate( 0,  ${i * 20})`);
+
+      legendRow
+        .append('rect')
+        .attr('width', 10)
+        .attr('height', 10)
+        .attr('fill', this.color(continent));
+
+      legendRow
+        .append('text')
+        .attr('x', -10)
+        .attr('y', 10)
+        .attr('text-anchor', 'end')
+        .style('text-transform', 'capitalize')
+        .text(continent);
+    });
+  }
+
+  public getJSON(): Observable<any> {
+    return this.http.get(this._jsonURL);
   }
 }

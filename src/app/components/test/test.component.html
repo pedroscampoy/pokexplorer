@@ -9,7 +9,6 @@
     <input id="subTitle" type="text" formControlName="subTitle" />
   </div> -->
   <h2>Data</h2>
-  <div>{{dataStore$ | async}}</div>
   <div formArrayName="data">
     <div *ngFor="let datum of data.controls; let i = index" [formGroupName]="i">
       <!-- The repeated alias template -->
@@ -27,7 +26,7 @@
 </form>
 
 <div class="chart-wrapper">
-  <app-bar [dataValue]="dataValue"></app-bar>
+  <app-bar></app-bar>
   <!-- <app-pie [dataValue]="dataValue"></app-pie> -->
   <app-scatter [dataValue]="dataValue"></app-scatter>
 </div>

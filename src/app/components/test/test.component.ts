@@ -4,6 +4,7 @@ import { Framework } from 'src/app/core/models/framework.model';
 import { Store } from '@ngrx/store';
 import { dataSelector } from 'src/app/core/store/selectors';
 import { SetData } from 'src/app/core/store/actions';
+import { delay } from 'rxjs/operators';
 
 @Component({
   selector: 'app-test',
@@ -37,12 +38,15 @@ export class TestComponent implements OnInit {
       // subTitle: ['Subtitle', Validators.required],
       data: this.fb.array(this.dataSource.map((framework: Framework) => this.updateData(framework)))
     });
-    this.dataValue = this.form.value;
+    this.dataValue = this.form.value['data'];
+    this.form.valueChanges.pipe(delay(1000)).subscribe(status => {
+      if (this.form.valid) {this.store.dispatch(SetData(this.form.value))}
+    })
   }
 
   onSubmit() {
     this.dataValue = this.form.value;
-    this.store.dispatch(SetData({data: this.dataValue}))
+    this.store.dispatch(SetData(this.dataValue))
   }
 
   updateData(data: Framework): FormGroup {

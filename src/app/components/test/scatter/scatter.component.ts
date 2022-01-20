@@ -73,14 +73,14 @@ export class ScatterComponent implements OnInit, OnChanges {
       .append('g')
       .attr('class', 'y axis');
 
-    this.data = this.dataValue['data'];
+    this.data = this.dataValue;
     this.drawPlot(this.data);
     this.initialized = true;
   }
 
   ngOnChanges() {
     if (this.initialized) {
-      this.data = this.dataValue['data'];
+      this.data = this.dataValue;
       this.drawPlot(this.data);
     }
   }
