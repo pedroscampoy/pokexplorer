@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
 import * as d3 from 'd3';
 // import * as d3tip from 'd3-tip';
 import { Observable } from 'rxjs';
@@ -29,13 +30,21 @@ export class Project2Component implements OnInit, AfterViewInit {
   private formatCharacter = '$';
   private format: any;
   private formattedData: any;
+  private interval!: ReturnType<typeof setTimeout>;
   private timeLabel: any;
   private _jsonURL = 'assets/countries.json';
-  private continents: Array<string> = [];
+  public continents: Array<string> = [];
+  private selectedContinent = 'all'
   private legend: any;
   // private tip: any;
+  public icon = true;
+  public defaultContinent = 'all'
 
-  constructor(private http: HttpClient) {}
+  form = this.fb.group({
+    continentName: ['all', [Validators.required]],
+  });
+
+  constructor(private http: HttpClient, private fb: FormBuilder) {}
 
   ngOnInit(): void {
     this.getJSON().subscribe((data) => {
@@ -60,11 +69,10 @@ export class Project2Component implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    d3.interval(() => {
-      // at the end of our data, loop back
-      this.time = this.time < 214 ? this.time + 1 : 0;
-      this.update(this.formattedData[this.time]);
-    }, 100);
+    // d3.interval(() => {
+    //   // at the end of our data, loop back
+    //   this.step()
+    // }, 100);
 
     // Tooltip
     // this.tip = d3.tip()
@@ -79,7 +87,6 @@ export class Project2Component implements OnInit, AfterViewInit {
     //   })
 
     // this.svg.call(this.tip)
-
 
     // Scales
     this.x = d3
@@ -154,10 +161,17 @@ export class Project2Component implements OnInit, AfterViewInit {
     // standard transition time for the visualization
     const t = d3.transition().duration(100);
 
+    const filteredData = data.filter((d: any) => {
+      if (this.selectedContinent === "all") return true
+      else {
+        return d.continent == this.selectedContinent
+      }
+    })
+
     // JOIN new data with old elements.
     const circles = this.svg
       .selectAll('circle')
-      .data(data, (d: any) => d.country);
+      .data(filteredData, (d: any) => d.country);
 
     // EXIT old elements not present in new data.
     circles.exit().remove();
@@ -207,6 +221,35 @@ export class Project2Component implements OnInit, AfterViewInit {
         .style('text-transform', 'capitalize')
         .text(continent);
     });
+  }
+
+  step(): void {
+    // at the end of our data, loop back
+    this.time = this.time < 214 ? this.time + 1 : 0;
+    this.update(this.formattedData[this.time]);
+  }
+
+  onClickPlay(): void {
+    if (this.icon) {
+      this.icon = !this.icon;
+      this.interval = setInterval(() => this.step(), 100);
+    } else {
+      this.icon = !this.icon;
+      clearInterval(this.interval);
+    }
+  }
+
+  onClickReset(): void {
+    this.time = 0;
+    this.update(this.formattedData[this.time]);
+  }
+
+  // get continentName() {
+  //   return this.form.get('continentName');
+  // }
+
+  onChangeContinent(event: any) {
+    this.selectedContinent = event.target.value
   }
 
   public getJSON(): Observable<any> {

@@ -1,4 +1,16 @@
 <div class="app-scatter">
   <h2>Project 2</h2>
+  <button mat-fab (click)="onClickPlay()">
+    <mat-icon>{{icon ? 'play_arrow' : 'pause'}}</mat-icon>
+  </button>
+  <button mat-fab (click)="onClickReset()">
+    <mat-icon>replay</mat-icon>
+  </button>
+  <form [formGroup]="form">
+    <select formControlName="continentName" (change)="onChangeContinent($event)">
+       <option value="all">ALL</option>
+       <option *ngFor="let continent of continents" [value]="continent" >{{continent}}</option>
+    </select>
+ </form>
   <figure id="project2"></figure>
 </div>

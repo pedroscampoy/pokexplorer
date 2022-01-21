@@ -21,8 +21,11 @@
       <button (click)="onDeleteData(i)">X</button>
     </div>
   </div>
-  <button (click)="onAddData()" type="button">+ Add</button>
-  <button type="submit" [disabled]="!form.valid">Submit</button>
+  <br />
+  <button mat-mini-fab color="accent" type="button" (click)="onAddData()">
+    <mat-icon>plus_one</mat-icon>
+  </button>
+  <!-- <button type="submit" [disabled]="!form.valid">Submit</button> -->
 </form>
 
 <div class="chart-wrapper">
