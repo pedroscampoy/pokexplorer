@@ -18,12 +18,16 @@ import { HomeComponent } from './components/home/home.component';
 import { BarComponent } from './components/test/bar/bar.component';
 import { PieComponent } from './components/test/pie/pie.component';
 import { ScatterComponent } from './components/test/scatter/scatter.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Project2Component } from './components/project2/project2.component';
 import { AppStoreModule } from './core/store/app-store.module';
 import { CommonModule } from '@angular/common';
 import { ChordTypesComponent } from './components/chord-types/chord-types.component';
 import { HttpClientModule } from '@angular/common/http';
+import {MatSliderModule} from '@angular/material/slider';
+import {MatSelectModule} from '@angular/material/select';
+
+
 
 @NgModule({
   declarations: [
@@ -51,8 +55,11 @@ import { HttpClientModule } from '@angular/common/http';
     MatButtonModule,
     MatMenuModule,
     ReactiveFormsModule,
+    FormsModule,
     AppStoreModule,
-    HttpClientModule
+    HttpClientModule,
+    MatSliderModule,
+    MatSelectModule
   ],
   providers: [],
   bootstrap: [AppComponent],

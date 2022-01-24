@@ -26,7 +26,7 @@ export class Project2Component implements OnInit, AfterViewInit {
   private xAxisGroup: any;
   private yAxisGroup: any;
   private color: any;
-  private time = 0;
+  public time = 0;
   private formatCharacter = '$';
   private format: any;
   private formattedData: any;
@@ -43,6 +43,10 @@ export class Project2Component implements OnInit, AfterViewInit {
   form = this.fb.group({
     continentName: ['all', [Validators.required]],
   });
+
+  formatLabel(value: number) {
+    return value + 1800;
+  }
 
   constructor(private http: HttpClient, private fb: FormBuilder) {}
 
@@ -249,7 +253,13 @@ export class Project2Component implements OnInit, AfterViewInit {
   // }
 
   onChangeContinent(event: any) {
-    this.selectedContinent = event.target.value
+    this.selectedContinent = event.value
+    this.update(this.formattedData[this.time])
+  }
+
+  onChangeTime(event: any) {
+    this.time = event.value
+    this.update(this.formattedData[this.time])
   }
 
   public getJSON(): Observable<any> {

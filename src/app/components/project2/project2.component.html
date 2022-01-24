@@ -1,16 +1,23 @@
-<div class="app-scatter">
+<div class="app-project2">
   <h2>Project 2</h2>
-  <button mat-fab (click)="onClickPlay()">
-    <mat-icon>{{icon ? 'play_arrow' : 'pause'}}</mat-icon>
-  </button>
-  <button mat-fab (click)="onClickReset()">
-    <mat-icon>replay</mat-icon>
-  </button>
-  <form [formGroup]="form">
-    <select formControlName="continentName" (change)="onChangeContinent($event)">
-       <option value="all">ALL</option>
-       <option *ngFor="let continent of continents" [value]="continent" >{{continent}}</option>
-    </select>
- </form>
+  <div class="nav-control">
+    <div class="buttons">
+      <button mat-fab (click)="onClickPlay()">
+        <mat-icon>{{icon ? 'play_arrow' : 'pause'}}</mat-icon>
+      </button>
+      <button mat-fab (click)="onClickReset()">
+        <mat-icon>replay</mat-icon>
+      </button>
+    </div>
+    <mat-slider thumbLabel [displayWith]="formatLabel" tickInterval="1" step="1" min="0" max="214" aria-label="units"
+      [value]="time" (input)="onChangeTime($event)"></mat-slider>
+    <mat-form-field appearance="fill" [formGroup]="form">
+      <mat-label>Choose continent</mat-label>
+      <mat-select formControlName="continentName" (selectionChange)="onChangeContinent($event)">
+        <mat-option value="all">ALL</mat-option>
+        <mat-option *ngFor="let continent of continents" [value]="continent">{{continent}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
   <figure id="project2"></figure>
 </div>
