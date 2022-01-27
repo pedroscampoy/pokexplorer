@@ -1,0 +1,28 @@
+<div class="app-project2">
+  <h2>Project 3</h2>
+  <form [formGroup]="form">
+    <ngx-slider [options]="options" formControlName="sliderControl" (userChange)="onChangeRange($event)"></ngx-slider>
+    <mat-form-field appearance="fill">
+      <mat-label>Choose bitcoin</mat-label>
+      <mat-select formControlName="bitcoin" (selectionChange)="onChangeBitcoin($event)">
+        <mat-option value="bitcoin">Bitcoin</mat-option>
+        <mat-option value="ethereum">Ethereum</mat-option>
+        <mat-option value="bitcoin_cash">Bitcoin Cash</mat-option>
+        <mat-option value="litecoin">Litecoin</mat-option>
+        <mat-option value="ripple">Ripple</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Choose variable</mat-label>
+      <mat-select formControlName="var_select" (selectionChange)="onChangeVarSelect($event)">
+        <mat-option value="price_usd">Price in dollars</mat-option>
+        <mat-option value="market_cap">Market capitalization</mat-option>
+        <mat-option value="24h_vol">24 hour trading volume</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </form>
+  <!-- <p>min: {{form.get('sliderControl')?.value[0]}}</p>
+  <p>max: {{form.get('sliderControl')?.value[1]}}</p> -->
+  <figure id="project3"></figure>
+
+</div>

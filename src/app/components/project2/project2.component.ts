@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import * as d3 from 'd3';
 // import * as d3tip from 'd3-tip';
@@ -11,7 +11,7 @@ import { createSvg } from 'src/app/core/helpers/createSvg';
   templateUrl: './project2.component.html',
   styleUrls: ['./project2.component.scss'],
 })
-export class Project2Component implements OnInit, AfterViewInit {
+export class Project2Component implements OnInit, AfterViewInit, OnDestroy {
   // data: any;
   private margin = { top: 50, right: 50, bottom: 100, left: 100 };
   private divideFactor = 1.2;
@@ -27,18 +27,17 @@ export class Project2Component implements OnInit, AfterViewInit {
   private yAxisGroup: any;
   private color: any;
   public time = 0;
-  private formatCharacter = '$';
   private format: any;
   private formattedData: any;
   private interval!: ReturnType<typeof setTimeout>;
   private timeLabel: any;
   private _jsonURL = 'assets/countries.json';
   public continents: Array<string> = [];
-  private selectedContinent = 'all'
+  private selectedContinent = 'all';
   private legend: any;
   // private tip: any;
   public icon = true;
-  public defaultContinent = 'all'
+  public defaultContinent = 'all';
 
   form = this.fb.group({
     continentName: ['all', [Validators.required]],
@@ -144,7 +143,7 @@ export class Project2Component implements OnInit, AfterViewInit {
       .text('1800');
 
     // X Axis
-    this.format = d3.format(this.formatCharacter);
+    this.format = d3.format('$');
     const xAxisCall = d3
       .axisBottom(this.x)
       .tickValues([400, 4000, 40000])
@@ -166,11 +165,11 @@ export class Project2Component implements OnInit, AfterViewInit {
     const t = d3.transition().duration(100);
 
     const filteredData = data.filter((d: any) => {
-      if (this.selectedContinent === "all") return true
+      if (this.selectedContinent === 'all') return true;
       else {
-        return d.continent == this.selectedContinent
+        return d.continent == this.selectedContinent;
       }
-    })
+    });
 
     // JOIN new data with old elements.
     const circles = this.svg
@@ -253,16 +252,20 @@ export class Project2Component implements OnInit, AfterViewInit {
   // }
 
   onChangeContinent(event: any) {
-    this.selectedContinent = event.value
-    this.update(this.formattedData[this.time])
+    this.selectedContinent = event.value;
+    this.update(this.formattedData[this.time]);
   }
 
   onChangeTime(event: any) {
-    this.time = event.value
-    this.update(this.formattedData[this.time])
+    this.time = event.value;
+    this.update(this.formattedData[this.time]);
   }
 
   public getJSON(): Observable<any> {
     return this.http.get(this._jsonURL);
+  }
+
+  ngOnDestroy(): void {
+    clearInterval(this.interval);
   }
 }

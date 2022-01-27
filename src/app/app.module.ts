@@ -26,6 +26,9 @@ import { ChordTypesComponent } from './components/chord-types/chord-types.compon
 import { HttpClientModule } from '@angular/common/http';
 import {MatSliderModule} from '@angular/material/slider';
 import {MatSelectModule} from '@angular/material/select';
+import { Project3Component } from './components/project3/project3.component';
+import { NgxSliderModule } from '@angular-slider/ngx-slider';
+
 
 
 
@@ -42,6 +45,7 @@ import {MatSelectModule} from '@angular/material/select';
     ScatterComponent,
     Project2Component,
     ChordTypesComponent,
+    Project3Component,
   ],
   imports: [
     BrowserModule,
@@ -59,7 +63,8 @@ import {MatSelectModule} from '@angular/material/select';
     AppStoreModule,
     HttpClientModule,
     MatSliderModule,
-    MatSelectModule
+    MatSelectModule,
+    NgxSliderModule
   ],
   providers: [],
   bootstrap: [AppComponent],

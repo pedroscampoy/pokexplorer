@@ -4,6 +4,7 @@ import { ChordTypesComponent } from './components/chord-types/chord-types.compon
 import { HomeComponent } from './components/home/home.component';
 import { PokedexComponent } from './components/pokedex/pokedex.component';
 import { Project2Component } from './components/project2/project2.component';
+import { Project3Component } from './components/project3/project3.component';
 import { TestComponent } from './components/test/test.component';
 import { UserComponent } from './components/user/user.component';
 
@@ -27,6 +28,10 @@ const routes: Routes = [
   {
     path: 'project2',
     component: Project2Component,
+  },
+  {
+    path: 'project3',
+    component: Project3Component,
   },
   { path: 'user', component: UserComponent },
   {
